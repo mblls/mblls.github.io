@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Matt Ballas</title>
+    <description>Personal blog about things I find interesting.</description>
+    <link>http://localhost:4000</link>
+    
+      
+        <item>
+          <title>How to Apply the Sieve of Eratosthenes</title>
+          <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#introduction&quot; id=&quot;markdown-toc-introduction&quot;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#naive-algorithm&quot; id=&quot;markdown-toc-naive-algorithm&quot;&gt;Naive Algorithm&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#initial-optimizations&quot; id=&quot;markdown-toc-initial-optimizations&quot;&gt;Initial Optimizations&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#sieve-of-eratosthenes&quot; id=&quot;markdown-toc-sieve-of-eratosthenes&quot;&gt;Sieve of Eratosthenes&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#references&quot; id=&quot;markdown-toc-references&quot;&gt;References&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;When working through math and competitive programming problems like those listed on Project Euler, inevitably you’re going to have to solve problems involving prime numbers (and as would be expected!). One type of prime number problem specifically deals in trying to all find prime numbers within a certain range. As an example, &lt;a href=&quot;https://projecteuler.net/problem=3&quot;&gt;Problem 3&lt;/a&gt; on Project Euler asks us to find the largest prime that is less than &lt;kbd&gt;600851475143&lt;/kbd&gt;, which can be thought of as finding the last prime within the range \([0:600851475143]\).&lt;/p&gt;
+
+&lt;h2 id=&quot;naive-algorithm&quot;&gt;Naive Algorithm&lt;/h2&gt;
+
+&lt;p&gt;We can start solving this problem by using the naive algorithm for finding all primes within a bounded range as follows:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Naive Algorithm.
+n = 600851475143
+primes_under_n = set()
+for each number i in range(0:n):
+  i_is_prime = True
+  for each number j in range(0:i):
+    if i%j == 0:
+      i_is_prime = False
+  if i_is_prime:
+    primes_under_n.add(i)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This algorithm runs in &lt;kbd&gt;O(n^2)&lt;/kbd&gt; time, where we are evaluating every number &lt;kbd&gt;i&lt;/kbd&gt; within &lt;kbd&gt;[0:n]&lt;/kbd&gt;, and then checking every number &lt;kbd&gt;j&lt;/kbd&gt; within &lt;kbd&gt;[1:i]&lt;/kbd&gt; to determine if &lt;kbd&gt;j&lt;/kbd&gt; can be divided by it (thus proving or disproving that the number is in-fact prime). Since problem 3 requires finding all primes up to 600851475143, this would be on the order of \(3*10^{19}\) (\(~600851475143^{2}\)) total operations if you started from 0 and worked your way up to 600851475143.&lt;/p&gt;
+
+&lt;p&gt;Assume for the sake of simplicity that modular division takes 1 clock cycle and we’re running this on a 1GHz processor, this algorithm will take 36000000000 seconds to complete:&lt;/p&gt;
+
+\[(\frac{3*10^{19} operations}{1GHz per second} =  36000000000 seconds)\]
+
+&lt;p&gt;This means &lt;mark&gt;the naive algorithm would take ~1100 years to calculate in the worst case&lt;/mark&gt;. Obviously we can do much better.&lt;/p&gt;
+
+&lt;h2 id=&quot;initial-optimizations&quot;&gt;Initial Optimizations&lt;/h2&gt;
+
+&lt;p&gt;One very quick optimization we can make for specifically Problem 3 that the diligent reader probably noticed is to just start from n and work down in order to find the &lt;em&gt;largest&lt;/em&gt; prime. This will run on the order of &lt;kbd&gt;O(minutes)&lt;/kbd&gt; on a Macbook Pro. Though this is better, it’s only by a constant factor, so nothing has fundamentally changed from our original naive solution.&lt;/p&gt;
+
+&lt;p&gt;If we analyze the naive approach for bottlenecks we notice that the algorithm always evaluates all numbers up to &lt;kbd&gt;n&lt;/kbd&gt;, even numbers that are very obviously not prime, such as multiples of 2 (i.e. even). To start, what if we were to just check that whatever number &lt;kbd&gt;i&lt;/kbd&gt; isn’t even first (\(i \% 2 != 0\))? We could then effectively halve our problem space. Staying with line of thinking… what about if we repeated that process on &lt;em&gt;all&lt;/em&gt; obviously not prime numbers? Taking this a step further, we notice that our naive algorithm reevaluates numbers that are multiples of numbers that we’ve already determined to &lt;em&gt;not&lt;/em&gt; be prime. What if we just didn’t reevaluate numbers that we know are multiples of other not prime numbers?&lt;/p&gt;
+
+&lt;h2 id=&quot;sieve-of-eratosthenes&quot;&gt;Sieve of Eratosthenes&lt;/h2&gt;
+
+&lt;figure class=&quot;image&quot;&gt;
+    &lt;img src=&quot;/assets/blog_1_primes/Sieve_of_Eratosthenes_animation.gif&quot; alt=&quot;Fig 2. Sieve of Eratosthenes [SK22]&quot; /&gt;
+    &lt;figcaption&gt;Fig 2. Sieve of Eratosthenes [SK22]&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;This approach is known as &lt;mark&gt;the Sieve of Eratosthenes (SoE). The SoE algorithm works by checking that the number you’re currently on isn’t a multiple of a number that we’ve previously determined to not be prime.&lt;/mark&gt; We can picture the numbers &lt;kbd&gt;[1:n]&lt;/kbd&gt; as a large grid of numbers. For each number starting from 2 (1 is already known to be prime), we remove all numbers that are multiples of 2 from the grid. Now the next non crossed-out number is 3, so we cross out all numbers that are multiples of 3. Next non crossed-out number is 5. By repeating this, the next non-crossed out number is guaranteed to be a prime number. This effectively takes our time complexity from \(O(n^2)\) to \(O(nlog(log(n))\) (you can find the full asymptotic derivation &lt;a href=&quot;https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html&quot;&gt;here&lt;/a&gt;), reducing our total number of computations from \(3*10^{19}\) to 643571916360, a 4661480000% reduction in number of operations.&lt;/p&gt;
+
+&lt;figure class=&quot;image&quot;&gt;
+    &lt;img src=&quot;/assets/blog_1_primes/n^2 vs n_log(log(n)) vs n.png&quot; alt=&quot;Fig 1. n^2 vs. nlog(log(n))&quot; /&gt;
+    &lt;figcaption&gt;Fig 1. n^2 vs. nlog(log(n))&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;For the sake of solving similar range-based prime number problems on Project Euler, this algorithm vastly more than efficient. There are some subtle improvements that can be made to reduce the number of operations, which you can read about here &lt;a href=&quot;https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html&quot;&gt;https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html&lt;/a&gt; [JK14]. I encourage you to test out the SoE’s performance on your own machine, and try comparing its time-to-completion against the same algorithm with improvements made.&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;[JK14] “Sieve of Eratosthenes” by Jakob Kogler &lt;em&gt;et. all&lt;/em&gt; 2014 can be read here: &lt;a href=&quot;https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html&quot;&gt;https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html&lt;/a&gt; &lt;em&gt;Open source site dedicated to competitive programming algorithms and techniques.&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;[W22] “Sieve of Eratosthenes” &lt;a href=&quot;https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes&quot;&gt;https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;[SK22] SKopp at German Wikipedia - Own work, Original image at &lt;a href=&quot;https://commons.wikimedia.org/w/index.php?curid=2810935&quot;&gt;Image:Animation_Sieve_of_Eratosth.gif&lt;/a&gt;, CC BY-SA 3.0, &lt;a href=&quot;https://commons.wikimedia.org/w/index.php?curid=2810935&quot;&gt;https://commons.wikimedia.org/w/index.php?curid=2810935&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+          <pubDate>2022-04-20T00:00:00-04:00</pubDate>
+          <link>http://localhost:4000/posts/sieve-of-eratosthenes</link>
+          <guid isPermaLink="true">http://localhost:4000/posts/sieve-of-eratosthenes</guid>
+        </item>
+      
+    
+      
+        <item>
+          <title>What Is jekyll-latex?</title>
+          <description>&lt;div class=&quot;abstract&quot;&gt;&lt;h5&gt;Abstract&lt;/h5&gt;&lt;p&gt;
+This project is called jekyll-latex. It allows you to write markdown posts using the Jekyll framework with the beautiful typography of &lt;span class=&quot;latex&quot;&gt;L&lt;span&gt;a&lt;/span&gt;T&lt;span&gt;e&lt;/span&gt;X&lt;/span&gt; and the MathJax library so you can render gorgeous equations like this one below:
+$$ J(\theta) =\frac{1}{2m}
+[\sum^m_{i=1}(h_\theta(x^{(i)}) -
+y^{(i)})2 + \lambda\sum^n_{j=1}\theta^2_j $$
+&lt;/p&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+{% abstract %}
+This project is called jekyll-latex. It features the beautiful
+typography of &amp;lt;span class=&quot;latex&quot;&amp;gt;L&amp;lt;span&amp;gt;a&amp;lt;/span&amp;gt;T&amp;lt;span&amp;gt;
+e&amp;lt;/span&amp;gt;X&amp;lt;/span&amp;gt; and it includes MathJax so you can render
+gorgeous equations like this one below:
+$$ J(\theta) =\frac{1}{2m}
+[\sum^m_{i=1}(h_\theta(x^{(i)}) -
+y^{(i)})2 + \lambda\sum^n_{j=1}\theta^2_j $$
+{% endabstract %}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;/h1&gt;
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#table-of-contents&quot; id=&quot;markdown-toc-table-of-contents&quot;&gt;Table of Contents&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#theorems-definitions-and-proofs&quot; id=&quot;markdown-toc-theorems-definitions-and-proofs&quot;&gt;Theorems, Definitions, and Proofs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#html-elements&quot; id=&quot;markdown-toc-html-elements&quot;&gt;HTML Elements&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#text-formatting&quot; id=&quot;markdown-toc-text-formatting&quot;&gt;Text Formatting&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#definition-lists&quot; id=&quot;markdown-toc-definition-lists&quot;&gt;Definition Lists&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#blockquotes&quot; id=&quot;markdown-toc-blockquotes&quot;&gt;Blockquotes&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#tables&quot; id=&quot;markdown-toc-tables&quot;&gt;Tables&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#images&quot; id=&quot;markdown-toc-images&quot;&gt;Images&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#lists&quot; id=&quot;markdown-toc-lists&quot;&gt;Lists&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#unordered-list&quot; id=&quot;markdown-toc-unordered-list&quot;&gt;Unordered List&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#ordered-list&quot; id=&quot;markdown-toc-ordered-list&quot;&gt;Ordered List&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+# Table of Contents
+* TOC
+{:toc}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;theorems-definitions-and-proofs&quot;&gt;Theorems, Definitions, and Proofs&lt;/h1&gt;
+
+&lt;div class=&quot;theorem&quot;&gt;
+The real numbers $\mathbb{R}$ are uncountable
+&lt;/div&gt;
+
+&lt;div class=&quot;proof&quot;&gt;
+If $\mathbb{R}$ is countable, then [0, 1] is countable as well. Hence there exists a map
+C from $\mathbb{N}$ onto [0, 1] with $$C(n)=\sum_{i=1}^{\infty} c_{i}(n) 10^{-i}$$ where $c_{i}(n) \in\{0,1,
+\ldots, 9\},$
+are the digits in decimal expansion. Now consider a real
+number
+$$x=\sum_{i=1}^{\infty} \bar{c}_{i} 10^{-i} \in[0,1]$$
+with $\bar{c}_{i} \neq c_{i}(i)$. Obviously $C(n) \neq x$ for all $n \in \mathbb{N} .$ Hence $C$ is not onto. A
+contradiction.
+&lt;/div&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+
+{% theorem %}
+
+The real numbers $\mathbb{R}$ are uncountable
+
+{% endtheorem %}
+
+
+
+{% proof %}
+
+If $\mathbb{R}$ is countable, then [0, 1] is countable as well. Hence
+there exists a map C from $\mathbb{N}$ onto [0, 1] with
+$$C(n)=\sum_{i=1}^{\infty} c_{i}(n) 10^{-i}$$ where $c_{i}(n) \in\{0,1,
+\ldots, 9\},$
+are the digits in decimal expansion. Now consider a real number
+$$x=\sum_{i=1}^{\infty} \bar{c}_{i} 10^{-i} \in[0,1]$$
+with $\bar{c}_{i} \neq c_{i}(i)$. Obviously $C(n) \neq x$ for all $n \in
+\mathbb{N} .$ Hence $C$ is not onto. A contradiction.
+
+{% endproof %}
+
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;html-elements&quot;&gt;HTML Elements&lt;/h1&gt;
+
+&lt;h2 id=&quot;text-formatting&quot;&gt;Text Formatting&lt;/h2&gt;
+
+&lt;p&gt;This sentence is &lt;strong&gt;bold&lt;/strong&gt;. This sentence is &lt;em&gt;italic&lt;/em&gt;. &lt;small&gt;Small&lt;/small&gt; text is for fine print. Your copy can also be &lt;sub&gt;subscripted&lt;/sub&gt; and &lt;sup&gt;superscripted&lt;/sup&gt;, &lt;ins&gt;inserted&lt;/ins&gt;, &lt;del&gt;deleted&lt;/del&gt;, or &lt;mark&gt;highlighted&lt;/mark&gt;. You would use a &lt;a href=&quot;https://github.com/ryanmcdermott/jekyll-latex&quot;&gt;hyperlink&lt;/a&gt; to go to a new page. Keyboard input elements like &lt;kbd&gt;Cmd + Shift&lt;/kbd&gt; are used to display textual user input.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;This sentence is **bold**. This sentence is *italic*.
+&amp;lt;small&amp;gt;Small&amp;lt;/small&amp;gt; text is for fine print. Your
+copy can also be &amp;lt;sub&amp;gt;subscripted&amp;lt;/sub&amp;gt; and
+&amp;lt;sup&amp;gt;superscripted&amp;lt;/sup&amp;gt;, &amp;lt;ins&amp;gt;inserted&amp;lt;/ins&amp;gt;,
+~~deleted~~, or &amp;lt;mark&amp;gt;highlighted&amp;lt;/mark&amp;gt;. You would
+use a [hyperlink]
+(https://github.com/ryanmcdermott/jekyll-latex) to
+go to a new page. Keyboard input elements like
+&amp;lt;kbd&amp;gt;Cmd + Shift&amp;lt;/kbd&amp;gt; are used to display textual
+user input.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;definition-lists&quot;&gt;Definition Lists&lt;/h2&gt;
+&lt;dl&gt;
+  &lt;dt&gt;First Term&lt;/dt&gt;
+  &lt;dd&gt;This is the definition of the first term.&lt;/dd&gt;
+  &lt;dt&gt;Triple Integral&lt;/dt&gt;
+  &lt;dd&gt;$\iiint_V \mu(u,v,w) \,du\,dv\,dw$&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+First Term
+: This is the definition of the first term.
+
+Triple Integral
+: $\iiint_V \mu(u,v,w) \,du\,dv\,dw$
+
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;blockquotes&quot;&gt;Blockquotes&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Give me six hours to chop down a tree and I will spend the first four sharpening the axe.
+&lt;cite&gt;— Abraham Lincoln&lt;/cite&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+&amp;gt; Give me six hours to chop down a tree and I will spend the first four
+sharpening the axe.
+&amp;lt;cite&amp;gt;— Abraham Lincoln&amp;lt;/cite&amp;gt;
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;tables&quot;&gt;Tables&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Header 1&lt;/th&gt;
+      &lt;th&gt;Header 2&lt;/th&gt;
+      &lt;th&gt;Header 3&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Description 1&lt;/td&gt;
+      &lt;td&gt;Description 2&lt;/td&gt;
+      &lt;td&gt;Description 3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Description 1&lt;/td&gt;
+      &lt;td&gt;Description 2&lt;/td&gt;
+      &lt;td&gt;Description 3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Description 1&lt;/td&gt;
+      &lt;td&gt;Description 2&lt;/td&gt;
+      &lt;td&gt;Description 3&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+|Header 1|Header 2|Header 3|
+|--- |--- |--- |
+|Description 1|Description 2|Description 3|
+|Description 1|Description 2|Description 3|
+|Description 1|Description 2|Description 3|
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;images&quot;&gt;Images&lt;/h2&gt;
+
+&lt;figure class=&quot;image&quot;&gt;
+    &lt;img src=&quot;/assets/latex_image_example.jpeg&quot; alt=&quot;Mountain landscape by John Towner.&quot; /&gt;
+    &lt;figcaption&gt;Mountain landscape by John Towner.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+{% include image.html
+    url=&quot;/assets/latex_image_example.jpeg&quot;
+    description=&quot;Mountain landscape by John Towner.&quot;
+%}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;lists&quot;&gt;Lists&lt;/h2&gt;
+
+&lt;h3 id=&quot;unordered-list&quot;&gt;Unordered List&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;List Item 1&lt;/li&gt;
+  &lt;li&gt;List Item 2&lt;/li&gt;
+  &lt;li&gt;List Item 3&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;ordered-list&quot;&gt;Ordered List&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;List Item 1&lt;/li&gt;
+  &lt;li&gt;List Item 2&lt;/li&gt;
+  &lt;li&gt;List Item 3&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+### Unordered List
+- List Item 1
+- List Item 2
+- List Item 3
+
+### Ordered List
+
+1. List Item 1
+1. List Item 2
+1. List Item 3
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+          <pubDate>2020-05-25T00:00:00-04:00</pubDate>
+          <link>http://localhost:4000/posts/what-is-jekyll-latex</link>
+          <guid isPermaLink="true">http://localhost:4000/posts/what-is-jekyll-latex</guid>
+        </item>
+      
+    
+  </channel>
+</rss>
