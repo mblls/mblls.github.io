@@ -12,7 +12,6 @@ author_gravatar:    93571a3c79c7a968bb7c72239d953397 # Your Gravatar md5 hash he
 # Site Settings
 domain:             mblls.github.io  # Change to your site
 url:                https://mblls.github.io
-baseurl:            
 permalink:          /posts/:title # Post permalink
 timezone:           America/New_York # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 mathjax:            true  # enables support for mathjax - set to false to disable
