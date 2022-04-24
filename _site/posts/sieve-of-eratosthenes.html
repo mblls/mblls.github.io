@@ -73,7 +73,7 @@
 
 <h2 id="introduction">Introduction</h2>
 
-<p>When working through math and competitive programming problems like those listed on Project Euler, inevitably you’re going to have to solve problems involving prime numbers (and as would be expected!). One type of prime number problem specifically deals in trying to all find prime numbers within a certain range. As an example, <a href="https://projecteuler.net/problem=3">Problem 3</a> on Project Euler asks us to find the largest prime that is less than <kbd>600851475143</kbd>, which can be thought of as finding the last prime within the range \([0:600851475143]\).</p>
+<p>While working through math and competitive programming problems like those listed on Project Euler, inevitably you’re going to have to solve problems involving prime numbers (and as would be expected!). One type of prime number problem specifically deals in trying to all find prime numbers within a certain range. As an example, <a href="https://projecteuler.net/problem=3">Problem 3</a> on Project Euler asks us to find the largest prime that is less than <kbd>600851475143</kbd>, which can be thought of as finding the last prime within the range \([0:600851475143]\).</p>
 
 <h2 id="naive-algorithm">Naive Algorithm</h2>
 
@@ -91,9 +91,9 @@ for each number i in range(0:n):
     primes_under_n.add(i)
 </code></pre></div></div>
 
-<p>This algorithm runs in <kbd>O(n^2)</kbd> time, where we are evaluating every number <kbd>i</kbd> within <kbd>[0:n]</kbd>, and then checking every number <kbd>j</kbd> within <kbd>[1:i]</kbd> to determine if <kbd>j</kbd> can be divided by it (thus proving or disproving that the number is in-fact prime). Since problem 3 requires finding all primes up to 600851475143, this would be on the order of \(3*10^{19}\) (\(~600851475143^{2}\)) total operations if you started from 0 and worked your way up to 600851475143.</p>
+<p>This algorithm runs in <kbd>O(n^2)</kbd> time, where we are evaluating every number <kbd>i</kbd> within <kbd>[0:n]</kbd>, and then checking every number <kbd>j</kbd> within <kbd>[1:i]</kbd> to determine if <kbd>i</kbd> can be divided by <kbd>j</kbd> with no remainder (thus proving or disproving that the number is, in fact, prime). Since Problem 3 requires finding all primes up to 600851475143, this would be on the order of \(3*10^{19}\) (\(~600851475143^{2}\)) total operations if you started from 0 and worked your way up to 600851475143.</p>
 
-<p>Assume for the sake of simplicity that modular division takes 1 clock cycle and we’re running this on a 1GHz processor, this algorithm will take 36000000000 seconds to complete:</p>
+<p>If we assume for the sake of simplicity that modular division takes 1 clock cycle and we’re running this on a 1GHz processor, this algorithm will take approximately 36000000000 seconds to complete.</p>
 
 \[(\frac{3*10^{19} operations}{1GHz per second} =  36000000000 seconds)\]
 
@@ -101,9 +101,11 @@ for each number i in range(0:n):
 
 <h2 id="initial-optimizations">Initial Optimizations</h2>
 
-<p>One very quick optimization we can make for specifically Problem 3 that the diligent reader probably noticed is to just start from n and work down in order to find the <em>largest</em> prime. This will run on the order of <kbd>O(minutes)</kbd> on a Macbook Pro. Though this is better, it’s only by a constant factor, so nothing has fundamentally changed from our original naive solution.</p>
+<p>One very quick optimization we can make for specifically Problem 3 that the diligent reader probably noticed is to just start from <kbd>n</kbd> and work down in order to find the <em>largest</em> prime. This will run on the order of <kbd>O(minutes)</kbd> on a Macbook Pro. Though this is better, it’s only by a constant factor; our naive algorithm has not fundamentally changed.</p>
 
-<p>If we analyze the naive approach for bottlenecks we notice that the algorithm always evaluates all numbers up to <kbd>n</kbd>, even numbers that are very obviously not prime, such as multiples of 2 (i.e. even). To start, what if we were to just check that whatever number <kbd>i</kbd> isn’t even first (\(i \% 2 != 0\))? We could then effectively halve our problem space. Staying with line of thinking… what about if we repeated that process on <em>all</em> obviously not prime numbers? Taking this a step further, we notice that our naive algorithm reevaluates numbers that are multiples of numbers that we’ve already determined to <em>not</em> be prime. What if we just didn’t reevaluate numbers that we know are multiples of other not prime numbers?</p>
+<p>If we analyze the naive approach for bottlenecks we notice that the algorithm always evaluates all numbers up to <kbd>n</kbd>, including numbers that are very obviously not prime, such as even numbers. What if we were to just check that whatever number <kbd>i</kbd> that we’re evaluating the primality of isn’t even first (where \(i \% 2 != 0\))? We could effectively halve our problem space!</p>
+
+<p>Staying with line of thinking… what about if we repeated that process on <em>all</em> obviously not prime numbers? Notice that our naive algorithm will evaluate numbers that are multiples of numbers that we’ve already determined to <em>not</em> be prime. What if we just didn’t evaluate numbers that we know are multiples of other not prime numbers?</p>
 
 <h2 id="sieve-of-eratosthenes">Sieve of Eratosthenes</h2>
 
@@ -112,21 +114,22 @@ for each number i in range(0:n):
     <figcaption>Fig 2. Sieve of Eratosthenes [SK22]</figcaption>
 </figure>
 
-<p>This approach is known as <mark>the Sieve of Eratosthenes (SoE). The SoE algorithm works by checking that the number you’re currently on isn’t a multiple of a number that we’ve previously determined to not be prime.</mark> We can picture the numbers <kbd>[1:n]</kbd> as a large grid of numbers. For each number starting from 2 (1 is already known to be prime), we remove all numbers that are multiples of 2 from the grid. Now the next non crossed-out number is 3, so we cross out all numbers that are multiples of 3. Next non crossed-out number is 5. By repeating this, the next non-crossed out number is guaranteed to be a prime number. This effectively takes our time complexity from \(O(n^2)\) to \(O(nlog(log(n))\) (you can find the full asymptotic derivation <a href="https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html">here</a>), reducing our total number of computations from \(3*10^{19}\) to 643571916360, a 4661480000% reduction in number of operations.</p>
+<p>This approach is known as <mark>the Sieve of Eratosthenes (SoE). The SoE algorithm works by checking that the number you’re currently on isn’t a multiple of a number that we’ve previously determined to not be prime.</mark> We can picture the numbers <kbd>[1:n]</kbd> as a large grid of numbers (Fig. 1). For each number starting from 2 (1 is not prime [CC21]), we remove all numbers that are multiples of 2 from the grid. Now the next non crossed-out number is 3, so we cross out all numbers that are multiples of 3. Next non crossed-out number is 5. By repeating this, the next non-crossed out number is guaranteed to be a prime number. This process of elimination takes our time complexity from \(O(n^2)\) to \(O(nlog(log(n))\) (Fig. 2). You can find the full asymptotic derivation <a href="https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html">here</a>. This reduces our total number of computations from \(3*10^{19}\) to 643571916360, a 4661480000% reduction in number of operations.</p>
 
 <figure class="image">
     <img src="/assets/blog_1_primes/n^2 vs n_log(log(n)) vs n.png" alt="Fig 1. n^2 vs. nlog(log(n))" />
     <figcaption>Fig 1. n^2 vs. nlog(log(n))</figcaption>
 </figure>
 
-<p>For the sake of solving similar range-based prime number problems on Project Euler, this algorithm vastly more than efficient. There are some subtle improvements that can be made to reduce the number of operations, which you can read about here <a href="https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html">https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html</a> [JK14]. I encourage you to test out the SoE’s performance on your own machine, and try comparing its time-to-completion against the same algorithm with improvements made.</p>
+<p>For the sake of solving similar range-based prime number problems on Project Euler, this algorithm vastly more than efficient. My solution to <a href="https://projecteuler.net/problem=10">Problem 10</a> (a similar “find primes within a certain range” problem) where I apply the SoE in code can be found on my GitHub <a href="https://github.com/mblls/EulerProjectQuestions/blob/master/summation_of_primes.py">here</a>. There are some subtle improvements that can be made to reduce the number of operations, which you can read about here <a href="https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html">https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html</a> [JK14]. I encourage you to test out the SoE’s performance on your own machine, and try comparing its time-to-completion against the same algorithm with improvements made.</p>
 
 <h2 id="references">References</h2>
 
 <ul>
   <li>[JK14] “Sieve of Eratosthenes” by Jakob Kogler <em>et. all</em> 2014 can be read here: <a href="https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html">https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html</a> <em>Open source site dedicated to competitive programming algorithms and techniques.</em></li>
-  <li>[W22] “Sieve of Eratosthenes” <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes</a></li>
+  <li>[W22] “Sieve of Eratosthenes” by Wikipedia Community 2022 <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes</a></li>
   <li>[SK22] SKopp at German Wikipedia - Own work, Original image at <a href="https://commons.wikimedia.org/w/index.php?curid=2810935">Image:Animation_Sieve_of_Eratosth.gif</a>, CC BY-SA 3.0, <a href="https://commons.wikimedia.org/w/index.php?curid=2810935">https://commons.wikimedia.org/w/index.php?curid=2810935</a></li>
+  <li>[CC21] “FAQ: Why is the number one not prime?” Chris K. Caldwell 2021 <a href="https://primes.utm.edu/notes/faq/one.html">https://primes.utm.edu/notes/faq/one.html</a></li>
 </ul>
 
 

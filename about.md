@@ -3,11 +3,17 @@ layout: page
 title: About Matt
 ---
 
-I'm a software engineer currently working on contract at Google. This blog is mainly a place for me to write about things that I find personally interesting, where I feel like I can share what I've learned in a digestible way for any audience. When I'm not at work I love tinkering on small projects (I'm currently building a chess engine and a 6502 computer). I have an interest in most things, and hope to continue writing about technical and non-technical subjects.
+My GitHub: [https://github.com/mblls](https://github.com/mblls)
 
-In my free time, my girlfriend and I are out and about hiking, hanging out with friends, and making up story lines for our cat Orion.
+I'm a software engineer currently working on contract at Google. This like to write about things that I find personally interesting, especially topics where I feel like I can share what I've learned in a digestible way, intended for any interested audience. I have an interest in all things computer science (my profession) and studies of the natural world (debatably everything else).
 
-Please email me at [mttblls@gmail.com](mttblls@gmail.com) with any questions or concerns. Happy learning!
+In my free time, you can my girlfriend and I out and about hiking, hanging out with our friends and family, and making up story lines for our cat Orion.
+
+Please email me at <mark>ballasmatthew@gmail.com</mark> with any questions, concerns, or topic recommendations.
+
+Happy learning!
+
+~ Matt
 
 
 {% include image.html url="/assets/orion.png" %}
