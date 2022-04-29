@@ -5,9 +5,7 @@ title: About Matt
 
 My GitHub: [https://github.com/mblls](https://github.com/mblls)
 
-I'm a software engineer currently working on contract at Google. This blog is where I write about things that I find personally interesting, usually with a technical twist, where I feel like I can share what I've learned in a digestible way, intended to be read by any audience. I have an interest in all things computer science (my profession) and studies of the natural world (debatably everything else).
-
-In my free time, you can my girlfriend and I out and about hiking, hanging out with our friends and family, and making up story lines for our cat Orion.
+I'm a software engineer currently working in Pennsylvania. I have an interest in all things software engineering/computer science (my day-job) and studies of the natural world (debatably everything else). My hope for this blog is to write about things that will make you go "Ahh!" (in an astonished, or at least semi-amused sort of way).
 
 Please email me at <mark>ballasmatthew@gmail.com</mark> with any questions, concerns, or topic recommendations.
 
@@ -17,3 +15,4 @@ Happy learning!
 
 
 {% include image.html url="/assets/orion.png" %}
+Rubber ducking isn't nearly as effective or as cute as "grey catting" (featuring Orion)
