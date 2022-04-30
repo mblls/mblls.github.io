@@ -25,7 +25,6 @@ sass:
     style:          :compressed
 
 # Other Params
-github:             " mblls "
 include:            [ "robots.txt" ]
 exclude:            [ "LICENSE", "README.md", "CNAME", "vendor", "Gemfile" ]
 plugins:
