@@ -35,7 +35,7 @@ Most of the resources are free and online.
 
 [The Odin Project](https://www.theodinproject.com/) [Self-Study Course] - Google engineers are at it again, making insanely useful resources for the rest of us. This will get you off of the ground if you’ve never coded a thing in your life. It includes exclusively free resources that take you from total N00B to a genuine tinkerer. If you’re wondering where to start, start here.
 
-[Learning Python the Hard Way](https://www.amazon.com/dp/0134692888/ref=emc_b_5_t) [Textbook] - This is a great first coding book to get your feet wet and expose you to a language and the command line. It doesn't get too in-depth, and will be a good litmus test to see whether this whole programming thing is right for you. This book would be well supplemented with https://realpython.com/.
+[Learning Python the Hard Way](https://www.amazon.com/dp/0134692888/ref=emc_b_5_t) [Textbook] - This is a great first coding book to get your feet wet and expose you to a language and the command line. It doesn't get too in-depth, and will be a good litmus test to see whether this whole programming thing is right for you. This book would be well supplemented with [https://realpython.com/](https://realpython.com/).
 
 [MIT 6.006 Introduction to Algorithms, Fall 2011](https://www.youtube.com/watch?v=HtSuA80QTyo&list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb) [Online Course]- Once you start getting a feel for a language and start doing some coding questions, I recommend you start watching this series. It guides you through the basic algorithms you’ll see in interviews and your day-to-day life. You can skip the proofs for now (unless you find them helpful), you just need to understand the core algorithms, their applications, and their time and space complexities. This course is aimed at all undergraduate students, but Algorithm courses tend to have more of a research angle to them. Bonus points if you implement the algorithms yourself (and you should)!
 
@@ -63,35 +63,35 @@ Most of the resources are free and online.
 
 You're going to have to do a coding interview one day if you want to work in software, so might as well get started now!
 
-https://leetcode.com
+[https://leetcode.com](https://leetcode.com)
 
-https://projecteuler.net/archives
+[https://projecteuler.net/archives](https://projecteuler.net/archives)
 
-https://www.hackerrank.com/dashboard
+[https://www.hackerrank.com/dashboard](https://www.hackerrank.com/dashboard)
 
 
 # Tech Blogs
 
 I recommend perusing the following links with the mentality of learning how to communicate software ideas well. Sometimes the posts can be super advanced, and other times they're a little dry, but a lot of times (especially Julia Evans blog) these can be invaluable resources for learning new topics.
 
-https://jvns.ca/
+[https://jvns.ca/](https://jvns.ca/)
 
-http://www.paulgraham.com/
+[http://www.paulgraham.com/](http://www.paulgraham.com/)
 
-https://rachelbythebay.com/w/
+[https://rachelbythebay.com/w/](https://rachelbythebay.com/w/)
 
-https://dropbox.tech/
+[https://dropbox.tech/](https://dropbox.tech/)
 
-https://netflixtechblog.com/
+[https://netflixtechblog.com/](https://netflixtechblog.com/)
 
-https://otoro.net/ml/
+[https://otoro.net/ml/](https://otoro.net/ml/)
 
 
 # Other Resources
 
 These are just things I personally like, take it or leave it.
 
-https://bikeshed.com/
+[https://bikeshed.com/](https://bikeshed.com/)
 
 [The Coding Train](https://www.youtube.com/channel/UCvjgXvBlbQiydffZU7m1_aw) - A great introduction to graphical programming led by a very enthusiastic instructor.
 
@@ -104,10 +104,10 @@ https://bikeshed.com/
 
 These are some extra resources to add a little CS spice into your YouTube subscriptions.
 
-https://www.youtube.com/@numberphile
+[https://www.youtube.com/@numberphile](https://www.youtube.com/@numberphile)
 
-https://www.youtube.com/@Computerphile
+[https://www.youtube.com/@Computerphile](https://www.youtube.com/@Computerphile)
 
-https://www.youtube.com/@Vihart
+[https://www.youtube.com/@Vihart](https://www.youtube.com/@Vihart)
 
-https://www.youtube.com/@BenEater
+[https://www.youtube.com/@BenEater](https://www.youtube.com/@BenEater)
