@@ -6,11 +6,11 @@ layout: post
 * TOC
 {:toc}
 
-## Introduction
+# Introduction
 
 While working through math and competitive programming problems like those listed on Project Euler, inevitably you’re going to have to solve problems involving prime numbers (and as would be expected!). One type of prime number problem specifically deals in trying to all find prime numbers within a certain range. As an example, [Problem 3](https://projecteuler.net/problem=3) on Project Euler asks us to find the largest prime that is less than <kbd>600851475143</kbd>, which can be thought of as finding the last prime within the range $$[0:600851475143]$$.  
 
-## Naive Algorithm
+# Naive Algorithm
 
 We can start solving this problem by using the naive algorithm for finding all primes within a bounded range as follows:
 
@@ -35,7 +35,7 @@ $$(\frac{3*10^{19} operations}{1GHz per second} =  36000000000 seconds)$$
 
 This means <mark>the naive algorithm would take ~1100 years to calculate in the worst case</mark>. Obviously we can do much better.
 
-## Initial Optimizations
+# Initial Optimizations
 
 One very quick optimization we can make for specifically Problem 3 that the diligent reader probably noticed is to just start from <kbd>n</kbd> and work down in order to find the _largest_ prime. This will run on the order of <kbd>O(minutes)</kbd> on a Macbook Pro. Though this is better, it's only by a constant factor; our naive algorithm has not fundamentally changed.  
 
@@ -43,7 +43,7 @@ If we analyze the naive approach for bottlenecks we notice that the algorithm al
 
 Staying with line of thinking... what about if we repeated that process on _all_ obviously not prime numbers? Notice that our naive algorithm will evaluate numbers that are multiples of numbers that we’ve already determined to _not_ be prime. What if we just didn't evaluate numbers that we know are multiples of other not prime numbers?
 
-## Sieve of Eratosthenes
+# Sieve of Eratosthenes
 
 {% include image.html url="/assets/blog_1_primes/Sieve_of_Eratosthenes_animation.gif" description="Fig 2. Sieve of Eratosthenes [SK22]" %}
 
@@ -53,7 +53,7 @@ This approach is known as <mark>the Sieve of Eratosthenes (SoE). The SoE algorit
 
 For the sake of solving similar range-based prime number problems on Project Euler, this algorithm vastly more than efficient. My solution to [Problem 10](https://projecteuler.net/problem=10) (a similar "find primes within a certain range" problem) where I apply the SoE in code can be found on my GitHub [here](https://github.com/mblls/EulerProjectQuestions/blob/master/summation_of_primes.py). There are some subtle improvements that can be made to reduce the number of operations, which you can read about here [https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html](https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html) [JK14]. I encourage you to test out the SoE’s performance on your own machine, and try comparing its time-to-completion against the same algorithm with improvements made.
 
-## References
+# References
 
 - [JK14] "Sieve of Eratosthenes" by Jakob Kogler _et. all_ 2014 can be read here: [https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html](https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html) _Open source site dedicated to competitive programming algorithms and techniques._
 - [W22] "Sieve of Eratosthenes" by Wikipedia Community 2022 [https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
